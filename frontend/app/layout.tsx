@@ -9,6 +9,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { ThemeProvider } from "../components/ThemeProvider"
 import './globals.css'
 import Sidebar from "@/components/Sidebar";
+import Providers from "./providers";
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -22,14 +23,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <ClerkProvider>
       <html lang="en">
         <body className={inter.className}>
-          <ThemeProvider defaultTheme="system" storageKey="study-assistant-theme">
-            <div style={{ display: "flex" }}>
-              <Sidebar />
-              <main style={{ flex: 1 }}>{children}</main>
-            </div>
-            <Toaster />
-            <Sonner />
-          </ThemeProvider>
+          <Providers>
+            <ThemeProvider defaultTheme="system" storageKey="study-assistant-theme">
+              <div style={{ display: "flex" }}>
+                <Sidebar />
+                <main style={{ flex: 1 }}>{children}</main>
+              </div>
+              <Toaster />
+              <Sonner />
+            </ThemeProvider>
+          </Providers>
         </body>
       </html>
     </ClerkProvider>

@@ -2,7 +2,7 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Target, TrendingUp, Clock, Flame } from 'lucide-react';
-import { TimerSession } from '@/pages/StudyTimer';
+import { TimerSession } from '@/app/models';
 
 interface TimerStatsProps {
   sessions: TimerSession[];
