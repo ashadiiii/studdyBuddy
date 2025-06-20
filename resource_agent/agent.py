@@ -18,4 +18,5 @@ root_agent = SequentialAgent(
      - plans the most suitable sources to retrieve from and breaks down the main task into subtasks , providing the suitable search terms for each subtasks resources. 
      - Gathers the resources based on the plan 
 """
+
 )
