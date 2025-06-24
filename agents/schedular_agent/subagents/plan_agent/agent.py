@@ -7,6 +7,6 @@ root_agent = LlmAgent(
     name="plan_agent",
     model=GEMINI_MODEL,
     instruction=PLANNER_PROMPT,
-    description="Generates or refines the roadmap with the main task broken down into subtasks based on the review and objectives provided.",
+    description="Generates efficient schedule that meets all scheduling requirements and parameters",
     output_key="plan"
 )

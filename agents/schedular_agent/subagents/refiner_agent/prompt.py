@@ -13,16 +13,8 @@ Your goal is to surgically apply the required adjustments while preserving the o
 4.  **Validate Changes:** After applying all feedback, briefly review the new schedule. Ensure that it logically incorporates the feedback and still meets all core requirements.
 
 ## INPUTS
-*   **`current_schedule`:** The full schedule that needs to be improved.
-*   **`review_feedback`:** A list of specific adjustments to make.
-
-You will receive the inputs in this structure:
-```
-{
-  "current_schedule": { ... the full schedule ... },
-  "review_feedback": [ "Feedback point 1", "Feedback point 2", ... ]
-}
-```
+*   **`current_schedule`:{plan}.
+*   **`review_feedback`:{review}
 
 ## OUTPUT FORMAT
 Your output **must be the complete, updated schedule**. Do not simply list the changes you made. The format must be identical to the original schedule format to ensure consistency within the refinement loop.

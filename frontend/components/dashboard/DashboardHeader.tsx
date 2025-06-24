@@ -8,7 +8,7 @@ export default function DashboardHeader() {
       <div className="flex-1 text-center md:text-left md:pr-8">
         <h1 className="text-4xl sm:text-5xl font-[900] flex items-center gap-3 animate-fade-in">
           <span className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 dark:from-indigo-400 dark:via-purple-400 dark:to-pink-400 bg-clip-text text-transparent">
-            Alex's Learning Hub
+            Deneths's Learning Hub
           </span>
           <span className="text-3xl animate-bounce">🚀</span>
         </h1>

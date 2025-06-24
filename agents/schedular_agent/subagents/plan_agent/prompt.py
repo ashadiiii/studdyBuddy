@@ -8,7 +8,7 @@ Your goal is to allocate each task to a specific time slot, creating a clear tim
 2.  **Allocate Tasks:** Distribute the tasks from the `Task List` across a timeline, from the start date until the final deadline.
 3.  **Respect Constraints:**
     *   Ensure the schedule fits within the user's `Time Availability` (e.g., only schedule tasks during the specified hours/days).
-    *   Adhere strictly to task `Dependencies`. A task cannot be scheduled before its prerequisites are complete.
+    *   Adhere strictly to task `Dependencies`. A task cannot be scheduled before its prerequisite tasks are complete.
 4.  **Apply Strategy:** Implement the `Recommended Strategy`. For example, if the strategy is to "Front-load difficult tasks," schedule the harder tasks earlier in the timeline.
 5.  **Be Realistic:** Create a balanced schedule. Avoid clustering too many difficult tasks on the same day. Include buffer time where appropriate, especially for complex topics.
 
