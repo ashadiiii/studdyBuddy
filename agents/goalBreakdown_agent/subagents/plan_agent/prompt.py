@@ -10,14 +10,16 @@ You either need to:
 
 
 
- Provide the output in the following format: 
+ Provide the output in JSON with the following attributes: 
         - Total time to complete the roadmap
         - Level of difficulty in completing the roadmap
         - Number of total subtasks
         - Under each sub task: 
+                - Task Title (Incorporate main task title, and sub-tasks number)
+                - Priority level (values should be ranging from low,medium,high)
                 - Task description
                 - Time duration
-                - When is it due respect to final deadline
+                - When is it due respect to final deadline (Give in format format: YYYY-MM-DD HH:MI:SS) 
                 - Pro Tips
 
 
