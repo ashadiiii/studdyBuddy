@@ -10,6 +10,7 @@ Your task is to evaluate the quality and suitability of a study plan or roadmap 
    - Satisfies all requirements
    - Is logically structured and feasible
    - Is tailored to the user's context (age, education level, subject, deadline)
+   - Are all the tasks properly aligned according to the final deadline. VERY IMPORTANT
 3. If the plan fails ANY of the checks above, provide concise, specific feedback on what to improve.
 4. If the plan meets ALL requirements and objectives:
    - Call the exit_loop function

@@ -150,12 +150,13 @@ async def export_to_tasks(
             "title": title,
             "description": full_description,
             "subject": goal.subject,
-            "due_date": pretty_date,
+            "due_date": due_date,
             "priority": priority,
             "status": status,
             "instructions": "",
             "resources": [],
             "submission_content": "",
+            "duration":duration
         }
 
         # Insert into DB (adjust if you use a different method)

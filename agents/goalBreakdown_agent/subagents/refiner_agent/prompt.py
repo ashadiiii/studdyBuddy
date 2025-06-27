@@ -15,9 +15,11 @@ Refine the exisiting plan further based on the given review
                 - Task Title (Incorporate main task title, and sub-tasks number)
                 - Priority level (values should be ranging from low,medium,high)
                 - Task description
+                - Task instructions(Descriptive steps to complete the task)
                 - Time duration
-                - When is it due respect to final deadline (Give in format format: YYYY-MM-DD HH:MI:SS) 
+                - Deadline (Give in format format: YYYY-MM-DD HH:MI:SS) 
                 - Pro Tips
+                - Dependancies(Other task in the breakdown that this task depends on)
 
 
 

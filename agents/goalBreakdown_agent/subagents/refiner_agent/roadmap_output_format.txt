@@ -1,0 +1,37 @@
+{
+  "total_time_to_complete": "12 hours",
+  "difficulty_level": "medium",
+  "number_of_subtasks": 3,
+  "subtasks": [
+    {
+      "task_title": "Main Task Title - Subtask 1",
+      "priority_level": "high",
+      "task_description": "Read and summarize Chapter 1.",
+      "task_instructions": "Read Chapter 1 thoroughly. Take notes on key concepts. Summarize the chapter in your own words.",
+      "time_duration": "3 hours",
+      "due_date": "2024-08-23 16:00:00",
+      "pro_tips": "Focus on understanding the main ideas, not just memorizing.",
+      "dependencies": []
+    },
+    {
+      "task_title": "Main Task Title - Subtask 2",
+      "priority_level": "medium",
+      "task_description": "Complete practice problems for Chapter 1.",
+      "task_instructions": "Solve all odd-numbered problems at the end of the chapter. Review mistakes and retry incorrect answers.",
+      "time_duration": "4 hours",
+      "due_date": "2024-08-25 18:00:00",
+      "pro_tips": "Time yourself to simulate exam conditions.",
+      "dependencies": ["Main Task Title - Subtask 1"]
+    },
+    {
+      "task_title": "Main Task Title - Subtask 3",
+      "priority_level": "low",
+      "task_description": "Review notes and prepare summary sheet.",
+      "task_instructions": "Condense your notes into a one-page summary. Highlight key formulas and concepts.",
+      "time_duration": "5 hours",
+      "due_date": "2024-08-28 10:00:00",
+      "pro_tips": "Use color coding for better memory retention.",
+      "dependencies": ["Main Task Title - Subtask 1", "Main Task Title - Subtask 2"]
+    }
+  ]
+} 

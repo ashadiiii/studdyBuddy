@@ -8,6 +8,7 @@ You will receive a JSON object with the following fields:
 - subject: string (the subject or domain of the main task)
 - title: string (the main goal or description of the task)
 - deadline: string (ISO 8601 datetime for the main task deadline)
+- Current date: Used to see the time duration left before the final deadline and to formulate a breakdown according to the time left. 
 - description: string (Description specifying any specific requirements and aknowledgements by the user. )
 ## INSTRUCTIONS
 - Carefully analyze the user's input and context to extract both explicit and implicit requirements and objectives.
@@ -17,7 +18,7 @@ You will receive a JSON object with the following fields:
 - Consider the following factors in your analysis:
   - The user's age and education level, and how these influence the most suitable approach to breaking down the task.
   - The subject of the task, and recommendations for the most effective roadmap or methodology.
-  - The deadline for completing the main task, and any time constraints for subtasks.
+  - The current date and deadline for completing the main task, and any time constraints for subtasks.
   - The logical order and dependencies between subtasks.
 - Present your findings in a clear, organized format (e.g., bullet points or a table).
 
