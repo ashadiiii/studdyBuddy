@@ -19,10 +19,30 @@ Your goal is to surgically apply the required adjustments while preserving the o
 ## OUTPUT FORMAT
 Your output **must be the complete, updated schedule**. Do not simply list the changes you made. The format must be identical to the original schedule format to ensure consistency within the refinement loop.
 
-### **Detailed Study Schedule (Revised)**
+Provide the output as a JSON object with the following structure:
 
-#### **Week 1: [Start Date] - [End Date]**
-*   **Monday:**
-    *   **Slot 1 (e.g., 6:00 PM - 7:00 PM):** [Task Name] (Difficulty: [Easy/Medium/Hard])
-*   ...and so on, for the entire schedule duration.
+{
+  "schedule": {
+    "start_date": "YYYY-MM-DD",
+    "end_date": "YYYY-MM-DD",
+    "total_duration": "X hours",
+    "tasks": [
+      {
+        "task_id": "string",
+        "title": "string",
+        "priority": "string (Easy/Medium/Hard)",
+        "description": "string",
+        "time_slots": [
+          {
+            "start_time": "YYYY-MM-DD HH:MM:SS",
+            "end_time": "YYYY-MM-DD HH:MM:SS",
+            "duration": "string (e.g., '1 hour')"
+          }
+        ],
+        "dependencies": ["string (task_id of dependent tasks)"],
+        "status": "string (e.g., 'not started')"
+      }
+    ]
+  }
+}
 """
