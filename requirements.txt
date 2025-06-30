@@ -11,4 +11,4 @@ deprecated==1.2.14
 google-adk==1.0.0
 mcp==1.9.1
 python-jose
-mcp-youtube-searc
+# wikipedia-mcp 
