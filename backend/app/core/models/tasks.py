@@ -35,3 +35,18 @@ class Task(BaseModel):
             }
         } 
 
+class TaskForSchedule(BaseModel):
+    task_id:str = Field(...,description="The id of the task, retrieved from the supabase table")
+    title: str = Field(..., description="The title of the task")
+    priority: str = Field(..., description="Priority level of the task (e.g., Easy, Medium, Hard)")
+    description: str = Field(..., description="Detailed description of the task")
+    duration: Optional[str] = Field(None, description="Estimated duration of the task (e.g., '3 hours') or None if to be estimated")
+    dependencies: List[str] = Field(default_factory=list, description="List of task titles that this task depends on")
+    deadline: Optional[str] = Field(None,description="gives the date in which the task must be completed before")
+
+class RescheduleTask(BaseModel):
+    title:str
+    description:str
+    duration:str
+    deadline:str
+    priority:str

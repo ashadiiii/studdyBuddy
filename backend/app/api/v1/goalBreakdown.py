@@ -1,4 +1,4 @@
-from fastapi import APIRouter, status, Depends,HTTPException
+from fastapi import APIRouter, status, Depends,HTTPException,Body
 from ...core.models.tasks import Task
 from ...core.models.goal import Goal
 from ...core.auth  import get_user_id
@@ -14,20 +14,29 @@ from google.adk.runners import Runner
 from google.adk.sessions import InMemorySessionService
 from google.genai import types
 from agents.goalBreakdown_agent import root_agent
-import json
 
+from ...core.models.tasks import Task
+from typing import List
+import json
 
 load_dotenv()
 router = APIRouter()
+
+protips=[]
 
 @router.get('/',response_model=List[Task])
 async def create_breakdown(goal:Goal, user_id:str = Depends(get_user_id),supabase:Client= Depends(get_supabase_client)):
     #add user education level to the Goal
     goal_dict = goal.model_dump()
     
-    response = supabase.table('users').select(columns=["education_level","eq"]).eq('user_id',user_id).execute()
-    user_info = response.data
-    goal_dict['education_level']=user_info['education_level']
+    response = supabase.table('users').select("education_level,age").eq('user_id', user_id).execute()
+    user_data = response.data
+
+    if not user_data or len(user_data) == 0:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    user_info = user_data[0]
+    goal_dict['education_level'] = user_info['education_level']
     goal_dict['age'] = user_info['age']
     goal_str = json.dumps(goal_dict)
 
@@ -100,14 +109,9 @@ async def create_breakdown(goal:Goal, user_id:str = Depends(get_user_id),supabas
     #return json answer
     return plan_obj
 
-from fastapi import APIRouter, Depends, HTTPException, status, Body
-from ...core.models.tasks import Task, TaskCreate
-from ...core.auth import get_user_id
-from ...core.superbase import get_supabase_client
-from supabase import Client
+from ...core.models.tasks import Task
 from typing import List
 import json
-from datetime import datetime, timedelta
 
 router = APIRouter()
 
@@ -134,14 +138,15 @@ async def export_to_tasks(
 
         # Parse due date
         due_date = subtask.get("When is it due respect to final deadline", main_deadline)
-        dt = datetime.strptime(due_date, "%Y-%m-%d %H:%M:%S")
-        pretty_date = dt.strftime("%A, %B %d, %Y")
+        # dt = datetime.strptime(due_date, "%Y-%m-%d %H:%M:%S")
+        # pretty_date = dt.strftime("%A, %B %d, %Y")
 
         # Priority and status
         priority = subtask.get("Priority level", "medium").lower()
         status = "pending"
         duration = subtask.get("Time duration")
-
+        instructions= subtask.get("Task instructions")
+        dependancies=subtask.get("Dependancies")
         #resources
 
         # Build the task create model
@@ -153,10 +158,12 @@ async def export_to_tasks(
             "due_date": due_date,
             "priority": priority,
             "status": status,
-            "instructions": "",
+            "instructions":instructions,
             "resources": [],
             "submission_content": "",
-            "duration":duration
+            "duration":duration,
+            "dependancies":dependancies
+
         }
 
         # Insert into DB (adjust if you use a different method)
@@ -169,6 +176,6 @@ async def export_to_tasks(
 
         ##functionality to update schedule as well
         #Call the schedular for the updated task list
-
+                # DO this only if theres schedular information provided
 
     return created_tasks

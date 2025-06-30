@@ -5,10 +5,10 @@ Your goal is to allocate each task to a specific time slot, creating a clear tim
 
 ## INSTRUCTIONS
 1. **Parse Input**: Carefully analyze the provided `scheduling_parameters`, paying close attention to the `Task List`, `Core Constraints` (deadline, time availability), and `Recommended Strategy`.
-2. **Allocate Tasks**: Distribute the tasks from the `Task List` across a timeline, starting from the given start date. Respect individual task deadlines if provided, or align with the overall deadline.
+2. **Allocate Tasks**: Distribute the tasks from the `Task List` across a timeline, starting from the given start date. Respect individual task deadlines that are provided, or align with the overall deadline. Also take into consideration the priority of each task when assigning them to the schedule. 
 3. **Respect Constraints**:
    - Ensure the schedule fits within the user's `Time Availability` (e.g., only schedule tasks during the specified hours/days).
-   - Adhere strictly to task `Dependencies`. A task cannot be scheduled before its prerequisite tasks are complete.
+   - Address the user's provided study pace, and intensity preference
 4. **Apply Strategy**: Implement the `Recommended Strategy`. For example, if the strategy is to 'Front-load difficult tasks,' schedule the harder tasks earlier in the timeline.
 5. **Be Realistic**: Create a balanced schedule. Avoid clustering too many difficult tasks on the same day. Include buffer time where appropriate, especially for complex topics. You can break the duration time for tasks into slots and schedule them to relevant dates and times.
 6. **Be Aware of Conflicting Times**: Ensure no slots are scheduled during unavailable times and assign them with a reasonable gap from those specified times.
@@ -38,7 +38,6 @@ Provide the output as a JSON object with the following structure:
             "duration": "string (e.g., '1 hour')"
           }
         ],
-        "dependencies": ["string (task_id of dependent tasks)"],
         "status": "string (e.g., 'not started')"
       }
     ]

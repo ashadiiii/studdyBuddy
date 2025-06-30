@@ -29,19 +29,19 @@ root_agent = LlmAgent(
                 }
             )
         ),
-        MCPToolset(
-            connection_params=StdioServerParameters(
-                command="python",
-                args=["gather_agent/semanticscholar-MCP-Server/semantic_scholar_server.py"],
-                timeout= 15000,
-            ),
-        ),
-        MCPToolset(
-            connection_params=StdioServerParameters(
-                command="wikipedia-mcp",
-                args=[]
-                )
-            ),
+        # MCPToolset(
+        #     connection_params=StdioServerParameters(
+        #         command="python",
+        #         args=["gather_agent/semanticscholar-MCP-Server/semantic_scholar_server.py"],
+        #         timeout= 15000,
+        #     ),
+        # ),
+        # MCPToolset(
+        #     connection_params=StdioServerParameters(
+        #         command="wikipedia-mcp",
+        #         args=[]
+        #         )
+        #     ),
         ],
         )
    

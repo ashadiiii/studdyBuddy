@@ -6,7 +6,7 @@ Your goal is to surgically apply the required adjustments while preserving the o
 ## INSTRUCTIONS
 1.  **Analyze Inputs:** You will receive two inputs: the `current_schedule` and the `review_feedback`. Carefully examine each point in the feedback to understand what needs to be changed.
 2.  **Implement Adjustments:** Methodically edit the `current_schedule` to address every piece of feedback. This may involve:
-    *   **Re-ordering tasks:** Shifting tasks to different days or weeks to improve flow or address difficulty concerns.
+    *   **Re-ordering tasks:** Shifting tasks to different days or weeks to improve flow or address difficulty/priority concerns.
     *   **Adjusting time slots:** Changing the time allocated to a task.
     *   **Splitting tasks:** If feedback suggests a task is too large, you might break it into smaller sub-tasks.
 3.  **Preserve Core Constraints:** This is critical. While making changes, you **must not violate** the original `Core Constraints` (final deadline, time availability) or task `Dependencies`. The refined schedule must remain valid.
