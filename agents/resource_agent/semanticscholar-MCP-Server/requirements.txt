@@ -1,5 +1,0 @@
-requests
-bs4 
-mcp 
-semanticscholar
-tenacity>=8.0.0
