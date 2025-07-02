@@ -10,6 +10,7 @@ export default function ProtectedLayout({
   children: React.ReactNode
 }) {
   return (
+    
     <ProtectedRoute>
       <div className="flex min-h-screen bg-background">
         <Sidebar />

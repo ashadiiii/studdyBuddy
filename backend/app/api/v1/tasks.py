@@ -4,7 +4,7 @@ from ...core.auth import get_user_id
 from ...core.superbase import get_supabase_client
 from supabase import Client
 from fastapi import HTTPException
-from pydantic import List
+from typing import List
 
 router = APIRouter()
 

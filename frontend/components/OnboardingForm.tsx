@@ -184,7 +184,7 @@ export default function OnboardingForm({ onSuccess }: { onSuccess?: () => void }
                   placeholder="Add a custom subject..."
                   value={customSubject}
                   onChange={(e) => setCustomSubject(e.target.value)}
-                  onKeyPress={handleCustomSubjectKeyPress}
+                  onKeyUp={handleCustomSubjectKeyPress}
                   className="flex-1 text-sm p-3 border-2 border-gray-200 dark:border-slate-600 focus:border-blue-500 dark:focus:border-blue-400 rounded-xl"
                 />
                 <Button

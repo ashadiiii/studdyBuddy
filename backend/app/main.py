@@ -1,7 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.api.v1 import auth, onboarding, tasks
+from app.api.v1 import auth, onboarding
 from app.api.v1.timer import router as timer_router
+from app.api.v1.tasks import router as tasks_router
 
 app = FastAPI(title="Minerva")
 
@@ -15,7 +16,7 @@ app.add_middleware(
 )
 
 # Step 9: Include all API routes
-app.include_router(timer_router, prefix="/api/v1", tags=["timer"])
+# app.include_router(timer_router, prefix="/api/v1", tags=["timer"])
 app.include_router(onboarding.router, prefix="/api/v1", tags=["onboarding"])
 app.include_router(auth.router, prefix="/api/v1/auth", tags=["auth"])
-app.include_router(tasks, prefix='/api/v1/tasks', tags=['tasks'])
+app.include_router(tasks_router, prefix='/api/v1/tasks', tags=['tasks'])

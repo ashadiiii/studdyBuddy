@@ -4,7 +4,7 @@ from ...core.models.goal import Goal
 from ...core.auth  import get_user_id
 from ...core.superbase import get_supabase_client
 from supabase import Client
-from pydantic import List
+from typing import List
 from .....agents.goalBreakdown_agent.agent import root_agent as agent
 from dotenv import load_dotenv
 import re
@@ -171,11 +171,5 @@ async def export_to_tasks(
         if not response.data:
             raise HTTPException(status_code=500, detail="Failed to create task")
         created_tasks.append(response.data[0])
-
-
-
-        ##functionality to update schedule as well
-        #Call the schedular for the updated task list
-                # DO this only if theres schedular information provided
 
     return created_tasks

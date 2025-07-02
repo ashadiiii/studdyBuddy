@@ -4,7 +4,7 @@ from ...core.superbase import get_supabase_client
 from supabase import Client
 from ...core.models.schedule import SchedulerInput,ScheduleUserInput
 from ...core.models.tasks import TaskForSchedule
-
+from ...core.services.schedule_service import create_schedule,get_schedule
 from dotenv import load_dotenv
 
 router = APIRouter()

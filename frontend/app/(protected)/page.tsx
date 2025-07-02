@@ -1,6 +1,6 @@
 import * as React from "react";
-import Dashboard from "../components/dashboard/Dashboard";
-import Sidebar from "../components/Sidebar"; // Import the Sidebar component
+import Dashboard from "../../components/dashboard/Dashboard";
+import Sidebar from "../../components/Sidebar"; // Import the Sidebar component
 
 const Index = () => {
   return (
