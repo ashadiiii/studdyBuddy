@@ -50,3 +50,4 @@ async def get_user_email_endpoint(email: str = Depends(get_user_email)):
         "message": "Email retrieved successfully",
         "email": email
     } 
+

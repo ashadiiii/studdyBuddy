@@ -40,7 +40,7 @@ def create_task(task: Task, user_id:str = Depends(get_user_id),superbase :Client
 
 #READ OPERATION
 #Get all tasks under that user
-@router.get('/',response_model=List[Task])
+@router.get('/')
 def get_all_tasks(user_id: str = Depends(get_user_id), superbase: Client = Depends(get_supabase_client)):
     try: 
         response = superbase.table('task').select('*').eq("user_id",user_id).execute()
@@ -91,6 +91,12 @@ def update_resources(task_id: str, user_id: str = Depends(get_user_id), superbas
         raise HTTPException(status_code=404, detail="Task not found or not owned by user.")
     return response.data[0]
 
+@router.patch('/{task_id}')
+def update_task(task_id: str, task: Task, user_id: str = Depends(get_user_id), superbase: Client = Depends(get_supabase_client)):
+    response = superbase.table('tasks').update(task.model_dump()).eq('id', task_id).eq('user_id', user_id).execute()
+    if not response.data:
+        raise HTTPException(status_code=404, detail="Task not found or not owned by user.")
+    return response.data[0]
 
 
 #REMOVE OPERATION

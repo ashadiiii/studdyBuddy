@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '../../../components/ui/button';
 import { Input } from '../../../components/ui/input';
 import { Badge } from '../../../components/ui/badge';
@@ -13,101 +13,105 @@ import AddTaskDialog from '../../../components/tasks/AddTaskDialog';
 
 export interface Task {
   id: string;
+  user_id: string;
   title: string;
   description: string;
   subject: string;
-  dueDate: string;
+  due_date: string;
   priority: 'high' | 'medium' | 'low';
   status: 'pending' | 'in progress' | 'completed';
   instructions?: string;
   exercises?: string[];
   aiResources?: string[];
+  submission_content?: string;
+  created_at?: string;
+  duration?: string;
 }
 
-const initialTasks: Task[] = [
-  {
-    id: '1',
-    title: 'Complete Math Chapter 5',
-    description: 'Finish exercises 1-20 on quadratic equations',
-    subject: 'Mathematics',
-    dueDate: '2024-06-15',
-    priority: 'high',
-    status: 'pending',
-    instructions: 'Solve the following quadratic equations using the quadratic formula and factoring methods.',
-    exercises: [
-      'x² + 5x + 6 = 0',
-      '2x² - 7x + 3 = 0',
-      'x² - 4x - 5 = 0',
-      '3x² + 2x - 8 = 0'
-    ],
-    aiResources: [
-      'Khan Academy - Quadratic Equations',
-      'Wolfram Alpha - Equation Solver',
-      'MIT OpenCourseWare - Algebra'
-    ]
-  },
-  {
-    id: '2',
-    title: 'History Essay Draft',
-    description: 'Write first draft of World War II essay',
-    subject: 'History',
-    dueDate: '2024-06-18',
-    priority: 'medium',
-    status: 'in progress',
-    instructions: 'Write a comprehensive essay analyzing the causes and consequences of World War II.',
-    exercises: [],
-    aiResources: [
-      'Britannica - World War II',
-      'National WWII Museum Resources',
-      'History.com - WWII Timeline'
-    ]
-  },
-  {
-    id: '3',
-    title: 'Physics Lab Report',
-    description: 'Submit lab report on pendulum experiment',
-    subject: 'Physics',
-    dueDate: '2024-06-20',
-    priority: 'low',
-    status: 'pending',
-    instructions: 'Complete the lab report analyzing the pendulum motion experiment data.',
-    exercises: [],
-    aiResources: [
-      'Physics Classroom - Pendulum Motion',
-      'Khan Academy - Simple Harmonic Motion'
-    ]
-  },
-  {
-    id: '4',
-    title: 'French Vocabulary Quiz',
-    description: 'Study 50 new vocabulary words',
-    subject: 'French',
-    dueDate: '2024-06-14',
-    priority: 'high',
-    status: 'completed',
-    instructions: 'Memorize and practice 50 new French vocabulary words for the upcoming quiz.',
-    exercises: [],
-    aiResources: [
-      'Duolingo - French Vocabulary',
-      'Conjuguemos - French Practice'
-    ]
-  },
-  {
-    id: '5',
-    title: 'Biology Reading',
-    description: 'Read Chapter 8: Cell Division',
-    subject: 'Biology',
-    dueDate: '2024-06-16',
-    priority: 'medium',
-    status: 'in progress',
-    instructions: 'Read and take notes on Chapter 8 covering mitosis and meiosis.',
-    exercises: [],
-    aiResources: [
-      'Khan Academy - Cell Division',
-      'Crash Course Biology - Mitosis'
-    ]
-  }
-];
+// const initialTasks: Task[] = [
+//   {
+//     id: '1',
+//     title: 'Complete Math Chapter 5',
+//     description: 'Finish exercises 1-20 on quadratic equations',
+//     subject: 'Mathematics',
+//     dueDate: '2024-06-15',
+//     priority: 'high',
+//     status: 'pending',
+//     instructions: 'Solve the following quadratic equations using the quadratic formula and factoring methods.',
+//     exercises: [
+//       'x² + 5x + 6 = 0',
+//       '2x² - 7x + 3 = 0',
+//       'x² - 4x - 5 = 0',
+//       '3x² + 2x - 8 = 0'
+//     ],
+//     aiResources: [
+//       'Khan Academy - Quadratic Equations',
+//       'Wolfram Alpha - Equation Solver',
+//       'MIT OpenCourseWare - Algebra'
+//     ]
+//   },
+//   {
+//     id: '2',
+//     title: 'History Essay Draft',
+//     description: 'Write first draft of World War II essay',
+//     subject: 'History',
+//     dueDate: '2024-06-18',
+//     priority: 'medium',
+//     status: 'in progress',
+//     instructions: 'Write a comprehensive essay analyzing the causes and consequences of World War II.',
+//     exercises: [],
+//     aiResources: [
+//       'Britannica - World War II',
+//       'National WWII Museum Resources',
+//       'History.com - WWII Timeline'
+//     ]
+//   },
+//   {
+//     id: '3',
+//     title: 'Physics Lab Report',
+//     description: 'Submit lab report on pendulum experiment',
+//     subject: 'Physics',
+//     dueDate: '2024-06-20',
+//     priority: 'low',
+//     status: 'pending',
+//     instructions: 'Complete the lab report analyzing the pendulum motion experiment data.',
+//     exercises: [],
+//     aiResources: [
+//       'Physics Classroom - Pendulum Motion',
+//       'Khan Academy - Simple Harmonic Motion'
+//     ]
+//   },
+//   {
+//     id: '4',
+//     title: 'French Vocabulary Quiz',
+//     description: 'Study 50 new vocabulary words',
+//     subject: 'French',
+//     dueDate: '2024-06-14',
+//     priority: 'high',
+//     status: 'completed',
+//     instructions: 'Memorize and practice 50 new French vocabulary words for the upcoming quiz.',
+//     exercises: [],
+//     aiResources: [
+//       'Duolingo - French Vocabulary',
+//       'Conjuguemos - French Practice'
+//     ]
+//   },
+//   {
+//     id: '5',
+//     title: 'Biology Reading',
+//     description: 'Read Chapter 8: Cell Division',
+//     subject: 'Biology',
+//     dueDate: '2024-06-16',
+//     priority: 'medium',
+//     status: 'in progress',
+//     instructions: 'Read and take notes on Chapter 8 covering mitosis and meiosis.',
+//     exercises: [],
+//     aiResources: [
+//       'Khan Academy - Cell Division',
+//       'Crash Course Biology - Mitosis'
+//     ]
+//   }
+// ];
 
 const filterTabs = [
   { id: 'all', label: 'All', count: 0 },
@@ -117,12 +121,42 @@ const filterTabs = [
 ];
 
 const Tasks = () => {
-  const [tasks, setTasks] = useState<Task[]>(initialTasks);
+  const [tasks, setTasks] = useState<Task[]>([]);
+  const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [activeFilter, setActiveFilter] = useState('all');
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [showAddDialog, setShowAddDialog] = useState(false);
-
+  
+  useEffect(() => {
+    const fetchTasks = async () => {
+      try{
+        const token = localStorage.getItem('token');
+        if (!token) {
+          throw new Error('No token found');
+        }
+        const response = await fetch('http://localhost:8000/api/v1/tasks', {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        });
+        if (!response.ok) {
+          throw new Error('Failed to fetch tasks');
+        }
+        const data = await response.json();
+        setTasks(data);
+      } 
+      
+      catch (error) {
+        console.error('Error fetching tasks:', error);
+      } 
+      finally {
+        setLoading(false);
+      }
+    };
+    fetchTasks();
+  },[]);
   // Update filter counts
   const updatedTabs = filterTabs.map(tab => ({
     ...tab,
@@ -142,19 +176,56 @@ const Tasks = () => {
     return matchesSearch && matchesFilter;
   });
 
-  const handleTaskUpdate = (updatedTask: Task) => {
-    setTasks(prev => prev.map(task => 
-      task.id === updatedTask.id ? updatedTask : task
-    ));
-    setSelectedTask(updatedTask);
+  const handleTaskUpdate = async (updatedTask: Task) => {
+    try{
+      const token = localStorage.getItem('token')
+      if (!token){
+        throw new Error('No token found');
+      }
+      const response = await fetch(`http://localhost:8000/api/v1/tasks/${updatedTask.id}`,{
+        method:'PATCH',
+        headers:{
+          'Authorization':`Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body:JSON.stringify(updatedTask),
+        });
+
+        if (!response.ok) throw new Error('Failed to update task');
+        const data = await response.json();
+        console.log(data)
+
+      setTasks(prev => prev.map(task => 
+        task.id === updatedTask.id ? data : task
+      ));
+      setSelectedTask(data);
+  }
+  catch (error) {
+    console.error('Error updating task:', error);
+  }
   };
 
-  const handleAddTask = (newTask: Omit<Task, 'id'>) => {
-    const task: Task = {
-      ...newTask,
-      id: Date.now().toString()
-    };
-    setTasks(prev => [...prev, task]);
+  const handleAddTask =async (newTask: Omit<Task, 'created_at' | 'id' | 'submission_content'>) => {
+    try{
+    const token = localStorage.getItem('token');
+    if (!token) throw new Error('No token found')
+    const response = await fetch('http://localhost:8000/api/v1/tasks',{
+      method:'POST',
+      headers:{
+        'Authorization':`Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body:JSON.stringify(newTask)
+      })
+      if (!response.ok) throw new Error('Failed to add task');
+      const createdTask: Task = await response.json(); // This will include the id from the DB
+  
+      setTasks(prev => [...prev, createdTask]);
+  }
+  catch(err){
+    console.error('Error adding task: ',err)
+  }
+
   };
 
   if (selectedTask) {

@@ -88,7 +88,8 @@ export const useAuth = () => {
   // Get current user info from backend
   const getCurrentUserInfo = async () => {
     try {
-      const response = await makeAuthenticatedRequest('/api/v1/auth/me');
+      //changed api from /me to /profile and the user_info should be based on if the user is in the table, not just clerk
+      const response = await makeAuthenticatedRequest('/api/v1/user/profile');
       return await response.json();
     } catch (err) {
       console.error('Error getting user info:', err);

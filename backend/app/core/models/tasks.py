@@ -7,7 +7,7 @@ class Task(BaseModel):
     title: str
     description: Optional[str] = None
     subject: str
-    due_date: datetime
+    dueDate: datetime
     priority: str = Field(
         default="medium",
         pattern="^(low|medium|high)$"
@@ -17,8 +17,11 @@ class Task(BaseModel):
         pattern="^(pending|in_progress|completed)$"
     )
     instructions: Optional[str] = None
-    resources: List[dict] = Field(default_factory=list)
+    exercises: Optional[List[str]] = None
+    aiResources: List[dict] = Field(default_factory=list)
     submission_content: Optional[str] = None
+    duration: Optional[str] = None
+    created_at: Optional[datetime] = None
 
     class Config:
         json_schema_extra = {
@@ -26,12 +29,15 @@ class Task(BaseModel):
                 "title": "Complete Math Assignment",
                 "description": "Solve problems 1-10 from Chapter 3",
                 "subject": "Mathematics",
-                "due_date": "2024-03-20T23:59:59Z",
+                "due_date": "2024-03-29T23:59:59Z",
                 "priority": "high",
                 "status": "pending",
                 "instructions": "Show all work and include explanations",
+                "exercises": ["1:...", "2:...", "3:..."],
                 "resources": [{"type": "textbook", "url": "https://example.com/math-book"}],
-                "submission_content": None
+                "submission_content": None,
+                "duration": None,
+                "created_at": "2024-03-20T23:59:59Z"
             }
         } 
 
@@ -41,7 +47,6 @@ class TaskForSchedule(BaseModel):
     priority: str = Field(..., description="Priority level of the task (e.g., Easy, Medium, Hard)")
     description: str = Field(..., description="Detailed description of the task")
     duration: Optional[str] = Field(None, description="Estimated duration of the task (e.g., '3 hours') or None if to be estimated")
-    dependencies: List[str] = Field(default_factory=list, description="List of task titles that this task depends on")
     deadline: Optional[str] = Field(None,description="gives the date in which the task must be completed before")
 
 class RescheduleTask(BaseModel):

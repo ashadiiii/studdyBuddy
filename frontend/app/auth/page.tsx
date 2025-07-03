@@ -1,6 +1,7 @@
 "use client"
 
-import { SignIn, SignUp, SignedIn, SignedOut } from "@clerk/clerk-react";
+import { SignIn, SignUp, SignedIn, SignedOut } from "@clerk/nextjs";
+import { useAuth } from "@/hooks/useAuth";
 import { useState, useEffect } from "react";
 import {useRouter} from "next/navigation"
 import { Button } from "../../components/ui/button";
@@ -8,26 +9,29 @@ import { ThemeToggle } from "../../components/ThemeToggle";
 import { BookOpen, Sparkles, Target, TrendingUp } from "lucide-react";
 import React from "react";
 const Auth = () => {
-  const [isSignUp, setIsSignUp] = useState(false);
-  const router = useRouter()
+  const [onboardingComplete, setOnboardingComplete] = useState<boolean | null>(null);
+  const [isSignUp,setIsSignUp] = useState(false)
+  const { isSignedIn, getCurrentUserInfo } = useAuth();
+  const router = useRouter();
 
   useEffect(() => {
-    // Check if user has completed onboarding
-    const onboardingData = localStorage.getItem('userOnboardingData');
-    if (!onboardingData) {
-      // If signed in but no onboarding data, redirect to onboarding
-      const timer = setTimeout(() => {
-        router.push('/onboarding');
-      }, 2000);
-      return () => clearTimeout(timer);
-    } else {
-      // If onboarding is complete, redirect to dashboard
-      const timer = setTimeout(() => {
-        router.push('/');
-      }, 2000);
-      return () => clearTimeout(timer);
+    if (!isSignedIn ) return;
+    async function checkOnboarding() {
+      const data = await getCurrentUserInfo();
+      setOnboardingComplete(!!data);
     }
-  }, [router]);
+    checkOnboarding();
+  }, [isSignedIn, getCurrentUserInfo]);
+  
+  useEffect(() => {
+    if (onboardingComplete === null) return;
+    if (onboardingComplete) {
+      router.push("/");
+    } else {
+      router.push("/onboarding");
+    }
+  }, [onboardingComplete, router]);
+
 
   const clerkAppearance = {
     elements: {
@@ -138,7 +142,7 @@ const Auth = () => {
                 {isSignUp ? "Create Your Account" : "Welcome Back"}
               </h2>
               <p className="text-slate-400">
-                {isSignUp ? "Start your learning journey today" : "Continue your learning journey"}
+                {isSignUp? "Start your learning journey today" : "Continue your learning journey"}
               </p>
             </div>
 
@@ -162,13 +166,13 @@ const Auth = () => {
                   </div>
                   <div className="relative flex justify-center text-sm">
                     <span className="px-4 bg-slate-900 text-slate-400">
-                      {isSignUp ? "Already have an account?" : "Don't have an account?"}
+                      {isSignUp? "Already have an account?" : "Don't have an account?"}
                     </span>
                   </div>
                 </div>
                 <Button
                   variant="ghost"
-                  onClick={() => setIsSignUp(!isSignUp)}
+                  onClick={() => setIsSignUp(isSignUp)}
                   className="mt-4 text-blue-400 hover:text-blue-300 hover:bg-slate-800/60 font-semibold px-6 py-3 rounded-xl transition-all duration-300 border border-transparent hover:border-slate-700"
                 >
                   {isSignUp ? "Sign in instead" : "Create account"}
@@ -185,10 +189,10 @@ const Auth = () => {
                     </svg>
                   </div>
                   <h3 className="text-xl font-semibold text-emerald-400 mb-2">
-                    {localStorage.getItem('userOnboardingData') ? 'Welcome back!' : 'Account created successfully!'}
+                    { onboardingComplete ? 'Welcome back!' : 'Account created successfully!'}
                   </h3>
                   <p className="text-slate-400">
-                    {localStorage.getItem('userOnboardingData') 
+                    {onboardingComplete
                       ? 'Redirecting to your dashboard...' 
                       : 'Let\'s set up your profile...'}
                   </p>
