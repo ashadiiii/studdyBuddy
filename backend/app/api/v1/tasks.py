@@ -16,22 +16,14 @@ from fastapi.encoders import jsonable_encoder
 #CREATE OPERATION
 @router.post('/',status_code=status.HTTP_201_CREATED)
 def create_task(task: TaskCreate, clerk_user_id:str = Depends(get_user_id),supabase :Client = Depends(get_supabase_client)):
-    #Get user id
+    #Get user id: This is to add the entry to the table with the user id
     user_info = get_user_data(clerk_user_id,supabase)
     print(user_info)
-    #Convert task to a dict object
+    #Convert task to a dict object to format the input before feeding it to the table
     task_dict = task.model_dump()
-
-    #Create task resources from agent
-
-    # Get current date in UTC, set time to midnight
-    now = datetime.now(timezone.utc)
-    midnight = now.replace(hour=0, minute=0, second=0, microsecond=0)
-
-    # Format as ISO 8601 string with 'Z' for UTC
-    task_dict['created_at'] = midnight.isoformat().replace('+00:00', 'Z')
+    # Format dates as ISO 8601 string
+    task_dict['created_at'] = datetime.now().date().isoformat()  # 'YYYY-MM-DD'
     task_dict['due_date'] = task_dict['due_date'].isoformat()
-
     #Add user id to it
     task_dict['user_id'] = user_info['id']
     print(f' [TASK TO INPUT]: {task_dict}')
@@ -46,7 +38,7 @@ def create_task(task: TaskCreate, clerk_user_id:str = Depends(get_user_id),supab
     if not response.data:
         # Insert failed, possibly due to validation or constraint error
         raise HTTPException(status_code=400, detail=f"Task creation failed: {response.error if hasattr(response, 'error') else 'Unknown error'}")
-
+    print(jsonable_encoder(response.data[0]))
     return jsonable_encoder(response.data[0])
 
 

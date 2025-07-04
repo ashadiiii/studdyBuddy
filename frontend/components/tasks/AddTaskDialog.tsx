@@ -81,6 +81,8 @@ const AddTaskDialog: React.FC<AddTaskDialogProps> = ({ open, onOpenChange, onAdd
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
+  
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto bg-white dark:bg-gray-800">
@@ -181,7 +183,7 @@ const AddTaskDialog: React.FC<AddTaskDialogProps> = ({ open, onOpenChange, onAdd
               id="exercises"
               value={formData.exercises}
               onChange={(e) => updateField('exercises', e.target.value)}
-              placeholder="Add detailed instructions for this task..."
+              placeholder="Add detailed exercises for this task. Use commas to seperate them. eg: x+5=6, x+4=5, x+3=2"
               className="min-h-[100px] bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600"
             />
           </div>

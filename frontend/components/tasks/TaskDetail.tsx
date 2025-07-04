@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
 import { ArrowLeft, Calendar, CheckCircle, ExternalLink, Lightbulb } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { Task } from '@/pages/Tasks';
+import { Task } from '@/app/models';
 
 interface TaskDetailProps {
   task: Task;
@@ -55,7 +55,7 @@ const TaskDetail: React.FC<TaskDetailProps> = ({ task, onBack, onUpdate }) => {
   
   const priority = priorityConfig[task.priority];
   const status = statusConfig[task.status];
-  const dueDate = new Date(task.dueDate);
+  const dueDate = new Date(task.due_date);
 
   const handleMarkComplete = () => {
     onUpdate({
@@ -93,7 +93,7 @@ const TaskDetail: React.FC<TaskDetailProps> = ({ task, onBack, onUpdate }) => {
               {task.title}
             </h1>
             <p className="text-lg text-gray-600 dark:text-gray-400 mb-6">
-              {task.description}
+              {task.instructions}
             </p>
             
             <div className="flex flex-wrap gap-4 items-center">
@@ -168,7 +168,7 @@ const TaskDetail: React.FC<TaskDetailProps> = ({ task, onBack, onUpdate }) => {
             )}
 
             {/* Exercises */}
-            {task.exercises && task.exercises.length > 0 && (
+            {task.exercises && (
               <Card className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-xl border border-gray-200/50 dark:border-gray-700/50 rounded-2xl">
                 <CardHeader>
                   <CardTitle className="text-xl font-bold text-gray-900 dark:text-white">
@@ -177,12 +177,14 @@ const TaskDetail: React.FC<TaskDetailProps> = ({ task, onBack, onUpdate }) => {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
-                    {task.exercises.map((exercise, index) => (
+                    {task.exercises
+                      .split(',')
+                      .map((exercise, index) => (
                       <div key={index} className="flex items-center gap-4 p-4 bg-purple-50 dark:bg-purple-900/20 rounded-xl">
                         <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-indigo-600 text-white rounded-full flex items-center justify-center font-bold text-sm">
                           {index + 1}
                         </div>
-                        <span className="font-mono text-gray-800 dark:text-gray-200">{exercise}</span>
+                        <span className="font-mono text-gray-800 dark:text-gray-200">{exercise.trim()}</span>
                       </div>
                     ))}
                   </div>
@@ -229,7 +231,7 @@ const TaskDetail: React.FC<TaskDetailProps> = ({ task, onBack, onUpdate }) => {
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
-                {task.aiResources?.map((resource, index) => (
+                {task.resources?.map((resource, index) => (
                   <div
                     key={index}
                     className="p-3 bg-white/70 dark:bg-gray-800/70 rounded-xl hover:bg-white dark:hover:bg-gray-800 transition-colors duration-200 cursor-pointer group"
