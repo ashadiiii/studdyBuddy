@@ -1,5 +1,5 @@
 from fastapi import APIRouter , Depends, status
-from ...core.models.tasks import Task,TaskCreate
+from ...core.models.tasks import Task,TaskCreate,StatusUpdate,SubmissionContentUpdate
 from ...core.auth import get_user_id
 from ...core.superbase import get_supabase_client
 from supabase import Client
@@ -9,9 +9,15 @@ from ...core.services.userService import get_user_data
 router = APIRouter()
 from datetime import datetime, timezone
 from fastapi.encoders import jsonable_encoder
+import uuid
 
 # The get_user_id dependency is responsible for extracting and validating the user ID from the JWT token provided in the Authorization header.
-
+def serialize_value(v):
+    if isinstance(v, uuid.UUID):
+        return str(v)
+    if isinstance(v, datetime):
+        return v.isoformat()
+    return v
 
 #CREATE OPERATION
 @router.post('/',status_code=status.HTTP_201_CREATED)
@@ -74,19 +80,27 @@ def get_task(task_id:str,user_id:str=Depends(get_user_id),superbase:Client= Depe
 
 #change status
 @router.patch('/{task_id}/status')
-def update_task_status(task_id: str, status: str, user_id: str = Depends(get_user_id), superbase = Depends(get_supabase_client)):
+def update_task_status(task_id: str,
+                        status_update: StatusUpdate,
+                        user_id: str = Depends(get_user_id), 
+                        supabase = Depends(get_supabase_client)):
     # Validate status
-    if status not in ("pending", "in_progress", "completed"):
+    if status_update.status not in ("pending", "pending", "completed"):
         raise HTTPException(status_code=400, detail="Invalid status value.")
-    response = superbase.table('tasks').update({"status": status}).eq("id", task_id).eq("user_id", user_id).execute()
+    user_info = get_user_data(user_id,supabase)
+    print(user_info['id'])
+    print(repr(user_info['id']))
+    response = supabase.table('tasks').update({"status": status_update.status}).eq("id", task_id).eq("user_id", user_info['id']).execute()
+    print(response)
     if not response.data:
         raise HTTPException(status_code=404, detail="Task not found or not owned by user.")
     return response.data[0]
 
 #Add submission
 @router.patch('/{task_id}/submission')
-def add_submission(task_id: str, submission_content: str, user_id: str = Depends(get_user_id), superbase = Depends(get_supabase_client)):
-    response = superbase.table('tasks').update({"submission_content": submission_content}).eq("id", task_id).eq("user_id", user_id).execute()
+def add_submission(task_id: str, submission_content:SubmissionContentUpdate, user_id: str = Depends(get_user_id), supabase = Depends(get_supabase_client)):
+    user_info = get_user_data(user_id,supabase)
+    response = supabase.table('tasks').update({"submission_content": submission_content.submission_content}).eq("id", task_id).eq("user_id", user_info['id']).execute()
     if not response.data:
         raise HTTPException(status_code=404, detail="Task not found or not owned by user.")
     return response.data[0]
@@ -103,8 +117,11 @@ def update_resources(task_id: str, user_id: str = Depends(get_user_id), superbas
     return response.data[0]
 
 @router.patch('/{task_id}')
-def update_task(task_id: str, task: Task, user_id: str = Depends(get_user_id), superbase: Client = Depends(get_supabase_client)):
-    response = superbase.table('tasks').update(task.model_dump()).eq('id', task_id).eq('user_id', user_id).execute()
+def update_task(task_id: str, task: Task, user_id: str = Depends(get_user_id), supabase: Client = Depends(get_supabase_client)):
+    user_info = get_user_data(user_id,supabase)
+    update_data = {k: serialize_value(v) for k, v in task.dict().items() if v is not None}
+
+    response = supabase.table('tasks').update(update_data).eq('id', task_id).eq('user_id', user_info['id']).execute()
     if not response.data:
         raise HTTPException(status_code=404, detail="Task not found or not owned by user.")
     return response.data[0]

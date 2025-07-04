@@ -15,6 +15,13 @@ class TaskCreate(BaseModel):
     class Config:
         orm_mode = True
 
+class StatusUpdate(BaseModel):
+    status: str
+
+class SubmissionContentUpdate(BaseModel):
+    submission_content: str
+
+
 
 class Task(BaseModel):
     id:Optional[UUID] = None

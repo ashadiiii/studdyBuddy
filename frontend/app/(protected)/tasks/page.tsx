@@ -157,25 +157,13 @@ const Tasks = () => {
     return matchesSearch && matchesFilter;
   });
 
-  const handleTaskUpdate = async (updatedTask: Task) => {
-    try{
-      const response = await makeAuthenticatedRequest(`/api/v1/tasks/${updatedTask.id}`,{
-        method:'PATCH',
-        body:JSON.stringify(updatedTask),
-        });
-
-        if (!response.ok) throw new Error('Failed to update task');
-        const data = await response.json();
-        console.log(data)
-
-      setTasks(prev => prev.map(task => 
-        task.id === updatedTask.id ? data : task
-      ));
-      setSelectedTask(data);
-  }
-  catch (error) {
-    console.error('Error updating task:', error);
-  }
+  // This function updates the task in the list and the selected task
+  const handleTaskUpdate = (updatedTask: Task) => {
+    setTasks(prev =>
+      prev.map(task => task.id === updatedTask.id ? updatedTask : task)
+    );
+    console.log(updatedTask)
+    setSelectedTask(updatedTask); // This will rerender TaskDetail with new data
   };
 
   const handleAddTask =async (newTask: Omit<Task, 'created_at' | 'id' | 'submission_content' | 'user_id' | 'duration' | 'resources'>) => {

@@ -34,7 +34,7 @@ export interface TimerSession {
   }
 
   export interface Task{
-      id: string;
+      id?: string;
       user_id: string;
       title: string;
       instructions: string;
@@ -43,7 +43,7 @@ export interface TimerSession {
       priority: 'high' | 'medium' | 'low';
       status: 'pending' | 'in progress' | 'completed';
       exercises?: string;
-      resources?: Record<string,any>;
+      resources?: string[];
       submission_content?: string;
       created_at?: string;
       duration?: string;

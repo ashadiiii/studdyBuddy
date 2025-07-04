@@ -1,5 +1,4 @@
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -18,11 +17,13 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Task } from '@/app/models';
+type AddOrEditTask = Omit<Task, 'created_at' | 'submission_content' | 'user_id' | 'duration' | 'resources'> & { id?: string };
 
 interface AddTaskDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onAddTask: (task: Omit<Task, 'created_at' | 'id' | 'submission_content' | 'user_id' | 'duration' | 'resources'>) => void;
+  onAddTask: (task: AddOrEditTask) => void;
+  initialValues?: Partial<Omit<Task, 'created_at' | 'submission_content' | 'user_id' | 'duration' | 'resources'>>;
 }
 
 const subjects = [
@@ -38,7 +39,7 @@ const subjects = [
   'Music'
 ];
 
-const AddTaskDialog: React.FC<AddTaskDialogProps> = ({ open, onOpenChange, onAddTask }) => {
+const AddTaskDialog: React.FC<AddTaskDialogProps> = ({ open, onOpenChange, onAddTask, initialValues }) => {
   const [formData, setFormData] = useState({
     title: '',
     instructions: '',
@@ -48,6 +49,17 @@ const AddTaskDialog: React.FC<AddTaskDialogProps> = ({ open, onOpenChange, onAdd
     status: 'pending' as const,
     exercises: '',
   });
+  useEffect(() => {
+    setFormData({
+      title: initialValues?.title || '',
+      instructions: initialValues?.instructions || '',
+      subject: initialValues?.subject || '',
+      due_date: initialValues?.due_date ? new Date(initialValues.due_date).toISOString().slice(0, 10) : '',
+      priority: (initialValues?.priority as typeof formData.priority) || 'medium',
+      status: (initialValues?.status as typeof formData.status) || 'pending',
+      exercises: initialValues?.exercises || '',
+    });
+  }, [initialValues, open]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -56,12 +68,18 @@ const AddTaskDialog: React.FC<AddTaskDialogProps> = ({ open, onOpenChange, onAdd
       return;
     }
     const dueDateISO = new Date(formData.due_date).toISOString();
-
-
-    onAddTask({
+    // Build the payload
+    const payload = {
       ...formData,
-      due_date:dueDateISO
-    });
+      due_date: dueDateISO
+    };
+
+    // Only add id if editing
+    if (initialValues?.id) {
+      (payload as any).id = initialValues.id;
+    }
+
+    onAddTask(payload);
 
     // Reset form
     setFormData({
@@ -88,7 +106,7 @@ const AddTaskDialog: React.FC<AddTaskDialogProps> = ({ open, onOpenChange, onAdd
       <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto bg-white dark:bg-gray-800">
         <DialogHeader>
           <DialogTitle className="text-2xl font-bold text-gray-900 dark:text-white">
-            Create New Task
+            {initialValues? 'Update Task' :'Create New Task'}
           </DialogTitle>
         </DialogHeader>
         
@@ -203,7 +221,7 @@ const AddTaskDialog: React.FC<AddTaskDialogProps> = ({ open, onOpenChange, onAdd
               className="flex-1 h-12 bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 text-white font-semibold"
               disabled={!formData.title || !formData.subject || !formData.due_date}
             >
-              Create Task
+              {initialValues ? 'Update Task' : 'Create Task'}
             </Button>
           </div>
         </form>
