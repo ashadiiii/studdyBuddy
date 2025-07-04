@@ -17,12 +17,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Task } from '@/pages/Tasks';
+import { Task } from '@/app/models';
 
 interface AddTaskDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onAddTask: (task: Omit<Task, 'id'>) => void;
+  onAddTask: (task: Omit<Task, 'created_at' | 'id' | 'submission_content' | 'user_id' | 'duration' | 'resources'>) => void;
 }
 
 const subjects = [
@@ -41,36 +41,37 @@ const subjects = [
 const AddTaskDialog: React.FC<AddTaskDialogProps> = ({ open, onOpenChange, onAddTask }) => {
   const [formData, setFormData] = useState({
     title: '',
-    description: '',
+    instructions: '',
     subject: '',
-    dueDate: '',
+    due_date: '',
     priority: 'medium' as const,
     status: 'pending' as const,
-    instructions: '',
+    exercises: '',
   });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!formData.title || !formData.subject || !formData.dueDate) {
+    if (!formData.title || !formData.subject || !formData.due_date || !formData.instructions) {
       return;
     }
+    const dueDateISO = new Date(formData.due_date).toISOString();
+
 
     onAddTask({
       ...formData,
-      exercises: [],
-      aiResources: []
+      due_date:dueDateISO
     });
 
     // Reset form
     setFormData({
       title: '',
-      description: '',
+      instructions: '',
       subject: '',
-      dueDate: '',
+      due_date: '',
       priority: 'medium',
       status: 'pending',
-      instructions: '',
+      exercises:''
     });
 
     onOpenChange(false);
@@ -105,16 +106,16 @@ const AddTaskDialog: React.FC<AddTaskDialogProps> = ({ open, onOpenChange, onAdd
             />
           </div>
 
-          {/* Description */}
+          {/* Instructions */}
           <div className="space-y-2">
-            <Label htmlFor="description" className="text-sm font-medium text-gray-700 dark:text-gray-300">
-              Description
+            <Label htmlFor="instructions" className="text-sm font-medium text-gray-700 dark:text-gray-300">
+              Instructions
             </Label>
             <Textarea
-              id="description"
-              value={formData.description}
-              onChange={(e) => updateField('description', e.target.value)}
-              placeholder="Describe the task..."
+              id="instructions"
+              value={formData.instructions}
+              onChange={(e) => updateField('instructions', e.target.value)}
+              placeholder="Instructions of the task..."
               className="min-h-[80px] bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600"
             />
           </div>
@@ -140,14 +141,14 @@ const AddTaskDialog: React.FC<AddTaskDialogProps> = ({ open, onOpenChange, onAdd
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="dueDate" className="text-sm font-medium text-gray-700 dark:text-gray-300">
+              <Label htmlFor="due_date" className="text-sm font-medium text-gray-700 dark:text-gray-300">
                 Due Date *
               </Label>
               <Input
-                id="dueDate"
+                id="due_date"
                 type="date"
-                value={formData.dueDate}
-                onChange={(e) => updateField('dueDate', e.target.value)}
+                value={formData.due_date}
+                onChange={(e) => updateField('due_date', e.target.value)}
                 className="h-12 bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600"
                 required
               />
@@ -171,15 +172,15 @@ const AddTaskDialog: React.FC<AddTaskDialogProps> = ({ open, onOpenChange, onAdd
             </Select>
           </div>
 
-          {/* Instructions */}
+          {/* Exercises */}
           <div className="space-y-2">
-            <Label htmlFor="instructions" className="text-sm font-medium text-gray-700 dark:text-gray-300">
-              Instructions
+            <Label htmlFor="exercises" className="text-sm font-medium text-gray-700 dark:text-gray-300">
+              exercises
             </Label>
             <Textarea
-              id="instructions"
-              value={formData.instructions}
-              onChange={(e) => updateField('instructions', e.target.value)}
+              id="exercises"
+              value={formData.exercises}
+              onChange={(e) => updateField('exercises', e.target.value)}
               placeholder="Add detailed instructions for this task..."
               className="min-h-[100px] bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600"
             />
@@ -196,9 +197,9 @@ const AddTaskDialog: React.FC<AddTaskDialogProps> = ({ open, onOpenChange, onAdd
               Cancel
             </Button>
             <Button
-              type="submit"
+              type="submit" 
               className="flex-1 h-12 bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 text-white font-semibold"
-              disabled={!formData.title || !formData.subject || !formData.dueDate}
+              disabled={!formData.title || !formData.subject || !formData.due_date}
             >
               Create Task
             </Button>

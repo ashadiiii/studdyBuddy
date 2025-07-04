@@ -10,23 +10,8 @@ import { cn } from '../../../lib/utils';
 import TaskCard from '../../../components/tasks/TaskCard';
 import TaskDetail from '../../../components/tasks/TaskDetail';
 import AddTaskDialog from '../../../components/tasks/AddTaskDialog';
-
-export interface Task {
-  id: string;
-  user_id: string;
-  title: string;
-  description: string;
-  subject: string;
-  due_date: string;
-  priority: 'high' | 'medium' | 'low';
-  status: 'pending' | 'in progress' | 'completed';
-  instructions?: string;
-  exercises?: string[];
-  aiResources?: string[];
-  submission_content?: string;
-  created_at?: string;
-  duration?: string;
-}
+import { useAuth } from '@/hooks/useAuth';
+import {Task} from '@/app/models'
 
 // const initialTasks: Task[] = [
 //   {
@@ -127,25 +112,22 @@ const Tasks = () => {
   const [activeFilter, setActiveFilter] = useState('all');
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [showAddDialog, setShowAddDialog] = useState(false);
-  
+  const {makeAuthenticatedRequest} = useAuth()
   useEffect(() => {
     const fetchTasks = async () => {
       try{
-        const token = localStorage.getItem('token');
-        if (!token) {
-          throw new Error('No token found');
-        }
-        const response = await fetch('http://localhost:8000/api/v1/tasks', {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json',
-          },
+        const response = await makeAuthenticatedRequest('/api/v1/tasks',{
+          method:'GET'
         });
+        
         if (!response.ok) {
           throw new Error('Failed to fetch tasks');
         }
         const data = await response.json();
+        console.log(data)
         setTasks(data);
+        console.log('tasks:')
+        console.log(tasks)
       } 
       
       catch (error) {
@@ -168,8 +150,7 @@ const Tasks = () => {
   // Filter tasks based on search and active filter
   const filteredTasks = tasks.filter(task => {
     const matchesSearch = task.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         task.subject.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         task.description.toLowerCase().includes(searchQuery.toLowerCase());
+                         task.subject.toLowerCase().includes(searchQuery.toLowerCase()) ;
     
     const matchesFilter = activeFilter === 'all' || task.status === activeFilter;
     
@@ -178,16 +159,8 @@ const Tasks = () => {
 
   const handleTaskUpdate = async (updatedTask: Task) => {
     try{
-      const token = localStorage.getItem('token')
-      if (!token){
-        throw new Error('No token found');
-      }
-      const response = await fetch(`http://localhost:8000/api/v1/tasks/${updatedTask.id}`,{
+      const response = await makeAuthenticatedRequest(`/api/v1/tasks/${updatedTask.id}`,{
         method:'PATCH',
-        headers:{
-          'Authorization':`Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
         body:JSON.stringify(updatedTask),
         });
 
@@ -205,22 +178,17 @@ const Tasks = () => {
   }
   };
 
-  const handleAddTask =async (newTask: Omit<Task, 'created_at' | 'id' | 'submission_content'>) => {
+  const handleAddTask =async (newTask: Omit<Task, 'created_at' | 'id' | 'submission_content' | 'user_id' | 'duration' | 'resources'>) => {
     try{
-    const token = localStorage.getItem('token');
-    if (!token) throw new Error('No token found')
-    const response = await fetch('http://localhost:8000/api/v1/tasks',{
+    const response = await makeAuthenticatedRequest('/api/v1/tasks',{
       method:'POST',
-      headers:{
-        'Authorization':`Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
       body:JSON.stringify(newTask)
       })
       if (!response.ok) throw new Error('Failed to add task');
       const createdTask: Task = await response.json(); // This will include the id from the DB
-  
+      console.log(newTask)
       setTasks(prev => [...prev, createdTask]);
+      console.log('new task added to list')
   }
   catch(err){
     console.error('Error adding task: ',err)

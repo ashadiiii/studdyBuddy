@@ -3,11 +3,26 @@ from typing import Optional, List
 from uuid import UUID
 from pydantic import BaseModel, Field
 
-class Task(BaseModel):
+class TaskCreate(BaseModel):
     title: str
-    description: Optional[str] = None
+    instructions: str
     subject: str
-    dueDate: datetime
+    due_date: datetime
+    priority: str
+    status: str
+    exercises: Optional[str] = None
+
+    class Config:
+        orm_mode = True
+
+
+class Task(BaseModel):
+    id:Optional[UUID] = None
+    user_id:Optional[UUID] = None
+    title: str
+    instructions:str
+    subject: str
+    due_date: datetime
     priority: str = Field(
         default="medium",
         pattern="^(low|medium|high)$"
@@ -16,23 +31,24 @@ class Task(BaseModel):
         default="pending",
         pattern="^(pending|in_progress|completed)$"
     )
-    instructions: Optional[str] = None
-    exercises: Optional[List[str]] = None
-    aiResources: List[dict] = Field(default_factory=list)
+    exercises: Optional[str] = None
+    resources: List[dict] = Field(default_factory=list)
     submission_content: Optional[str] = None
     duration: Optional[str] = None
     created_at: Optional[datetime] = None
 
     class Config:
+        orm_mode = True
+
+    class Config:
         json_schema_extra = {
             "example": {
                 "title": "Complete Math Assignment",
-                "description": "Solve problems 1-10 from Chapter 3",
+                "instructions": "Solve problems 1-10 from Chapter 3",
                 "subject": "Mathematics",
                 "due_date": "2024-03-29T23:59:59Z",
                 "priority": "high",
                 "status": "pending",
-                "instructions": "Show all work and include explanations",
                 "exercises": ["1:...", "2:...", "3:..."],
                 "resources": [{"type": "textbook", "url": "https://example.com/math-book"}],
                 "submission_content": None,

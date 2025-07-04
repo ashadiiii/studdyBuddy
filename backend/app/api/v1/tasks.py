@@ -1,31 +1,44 @@
 from fastapi import APIRouter , Depends, status
-from ...core.models.tasks import Task
+from ...core.models.tasks import Task,TaskCreate
 from ...core.auth import get_user_id
 from ...core.superbase import get_supabase_client
 from supabase import Client
 from fastapi import HTTPException
 from typing import List
-
+from ...core.services.userService import get_user_data
 router = APIRouter()
+from datetime import datetime, timezone
+from fastapi.encoders import jsonable_encoder
 
 # The get_user_id dependency is responsible for extracting and validating the user ID from the JWT token provided in the Authorization header.
 
 
 #CREATE OPERATION
 @router.post('/',status_code=status.HTTP_201_CREATED)
-def create_task(task: Task, user_id:str = Depends(get_user_id),superbase :Client = Depends(get_supabase_client)):
+def create_task(task: TaskCreate, clerk_user_id:str = Depends(get_user_id),supabase :Client = Depends(get_supabase_client)):
+    #Get user id
+    user_info = get_user_data(clerk_user_id,supabase)
+    print(user_info)
     #Convert task to a dict object
     task_dict = task.model_dump()
 
     #Create task resources from agent
-    task_dict['resources'] = {}
+
+    # Get current date in UTC, set time to midnight
+    now = datetime.now(timezone.utc)
+    midnight = now.replace(hour=0, minute=0, second=0, microsecond=0)
+
+    # Format as ISO 8601 string with 'Z' for UTC
+    task_dict['created_at'] = midnight.isoformat().replace('+00:00', 'Z')
+    task_dict['due_date'] = task_dict['due_date'].isoformat()
 
     #Add user id to it
-    task_dict['user_id'] = user_id
-
+    task_dict['user_id'] = user_info['id']
+    print(f' [TASK TO INPUT]: {task_dict}')
     try:
         #Insert task to table
-        response = superbase.table('tasks').insert(task_dict).execute()
+        response = supabase.table('tasks').insert(task_dict).execute()
+        print(response)
     except Exception as e:
         # Database or connection error
         raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
@@ -34,17 +47,23 @@ def create_task(task: Task, user_id:str = Depends(get_user_id),superbase :Client
         # Insert failed, possibly due to validation or constraint error
         raise HTTPException(status_code=400, detail=f"Task creation failed: {response.error if hasattr(response, 'error') else 'Unknown error'}")
 
-    return response.data[0]
+    return jsonable_encoder(response.data[0])
 
 
 
 #READ OPERATION
 #Get all tasks under that user
 @router.get('/')
-def get_all_tasks(user_id: str = Depends(get_user_id), superbase: Client = Depends(get_supabase_client)):
+def get_all_tasks(user_id: str = Depends(get_user_id), supabase: Client = Depends(get_supabase_client)):
     try: 
-        response = superbase.table('task').select('*').eq("user_id",user_id).execute()
+        user_info = get_user_data(user_id,supabase)
+        print(user_info['id'])
+        print(repr(user_info['id']))
+        response = supabase.table('tasks').select('*').eq('user_id', 'ef073b5d-81b8-441a-bf67-b2b9b6d4cfb8').execute()        
+        print('[TASK] tasks retrieved') 
+        print(response.data)
         return response.data
+
     
     except Exception as e:
         # Database or connection error
@@ -53,7 +72,7 @@ def get_all_tasks(user_id: str = Depends(get_user_id), superbase: Client = Depen
 #Get the task selected by the user
 @router.get('/{task_id}',response_model=Task)
 def get_task(task_id:str,user_id:str=Depends(get_user_id),superbase:Client= Depends(get_supabase_client)):
-    response = superbase.table('task').select('*').eq('user_id',user_id).eq('task_id',task_id).execute()
+    response = superbase.table('tasks').select('*').eq('user_id',user_id).eq('task_id',task_id).execute()
     if not response.data:
         raise HTTPException(status_code=404, detail="Task not found")
     return response.data    

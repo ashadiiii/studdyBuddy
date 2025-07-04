@@ -32,3 +32,19 @@ export interface TimerSession {
     today_seconds: number;
     yesterday_seconds: number;
   }
+
+  export interface Task{
+      id: string;
+      user_id: string;
+      title: string;
+      instructions: string;
+      subject: string;
+      due_date: string;
+      priority: 'high' | 'medium' | 'low';
+      status: 'pending' | 'in progress' | 'completed';
+      exercises?: string;
+      resources?: Record<string,any>;
+      submission_content?: string;
+      created_at?: string;
+      duration?: string;
+    }

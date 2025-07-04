@@ -5,7 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Calendar, Clock } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { Task } from '@/pages/Tasks';
+import { Task } from '@/app/models';
 
 interface TaskCardProps {
   task: Task;
@@ -58,7 +58,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, onClick, delay = 0 }) => {
   const priority = priorityConfig[task.priority];
   const status = statusConfig[task.status];
   
-  const dueDate = new Date(task.dueDate);
+  const dueDate = new Date(task.due_date);
   const isOverdue = dueDate < new Date() && task.status !== 'completed';
   const isDueSoon = dueDate <= new Date(Date.now() + 2 * 24 * 60 * 60 * 1000) && task.status !== 'completed';
 
@@ -114,7 +114,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, onClick, delay = 0 }) => {
 
         {/* Description */}
         <p className="text-gray-600 dark:text-gray-400 text-sm mb-4 line-clamp-2">
-          {task.description}
+          {task.instructions}
         </p>
 
         {/* Subject */}
