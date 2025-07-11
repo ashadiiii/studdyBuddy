@@ -48,21 +48,21 @@ const ResourceTabs: React.FC<ResourceTabsProps> = ({
       <Tabs defaultValue="youtube" className="w-full">
         <TabsList className="grid w-full grid-cols-3 mb-6 bg-white/50 dark:bg-gray-800/50 p-1 rounded-2xl">
           {sourceSelection.youtube && (
-            <TabsTrigger value="youtube" className="flex items-center gap-2 text-xs font-medium rounded-xl data-[state=active]:bg-white data-[state=active]:shadow-md">
+            <TabsTrigger value="youtube" className="flex items-center gap-2 text-xs font-medium rounded-xl data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:text-gray-700">
               <Youtube size={16} />
               Videos
             </TabsTrigger>
           )}
           {sourceSelection.wikipedia && (
-            <TabsTrigger value="wikipedia" className="flex items-center gap-2 text-xs font-medium rounded-xl data-[state=active]:bg-white data-[state=active]:shadow-md">
+            <TabsTrigger value="wikipedia" className="flex items-center gap-2 text-xs font-medium rounded-xl data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:text-gray-700">
               <BookOpen size={16} />
               Wiki
             </TabsTrigger>
           )}
           {sourceSelection.scholar && (
-            <TabsTrigger value="scholar" className="flex items-center gap-2 text-xs font-medium rounded-xl data-[state=active]:bg-white data-[state=active]:shadow-md">
-              <GraduationCap size={16} />
-              Academic
+            <TabsTrigger value="scholar" className="flex items-center gap-1 text-xs font-medium rounded-xl data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:text-gray-700">
+             <GraduationCap size={16} />
+             Scholar
             </TabsTrigger>
           )}
         </TabsList>

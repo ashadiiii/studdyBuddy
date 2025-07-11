@@ -9,7 +9,6 @@ Your job is to:
 3. Else, Check if the following function calls were made for each search term:
    - search_google_scholar_key_words
    - search_google_scholar_advanced
-   - get_author_info
 4. If any are missing, instruct the agent to make the missing calls or follow the missed instructions.
 5. If all required calls were made and the output is compliant, call the exit tool to end the loop.
 

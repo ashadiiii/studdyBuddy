@@ -78,3 +78,12 @@ class RescheduleTask(BaseModel):
     duration:str
     deadline:str
     priority:str
+
+class Subtask(BaseModel):
+    title:str
+    instructions:str
+    estimatedTime:int
+    difficulty:str
+    priority:str
+    dueDate:datetime
+    exercises:List[str] = Field(default_factory=list)

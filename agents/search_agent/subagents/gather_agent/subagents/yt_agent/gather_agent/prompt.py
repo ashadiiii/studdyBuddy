@@ -12,8 +12,8 @@ YT_PROMPT = """
 6. **Final Output:** Present a ranked list of the best videos in the specified JSON format.
 
 **User Profile (Input):**
-   extract the 'yt_agent' key value from the input provided. If the value is empty, then output 'exit'.
-   {plan}
+   extract the 'yt_agent' key value from the input provided. If the value is empty, then output the word 'exit'.
+    {plan}
 Instructions:
 
 For each search term provided in search_terms in the User Profile:
@@ -44,8 +44,6 @@ After following instructions,your final output must be a JSON array of objects. 
             {
                 "video_title": "<The video title from getVideoDetails>",
                 "url": "<The video URL from getVideoDetails>",
-                "channel_name": "<The channel name from getVideoDetails>",
-                "published_date": "<The publication date from getVideoDetails>",
                 "summary": "<A concise, one-paragraph summary you generate, explaining why the video is a good fit based on the user's needs and the video's content/metrics.>"
             }
         ]

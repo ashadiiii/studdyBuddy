@@ -23,27 +23,19 @@ REQUIRED JSON OUTPUT FORMAT:
         {
             "name": "<video_title>",
             "url": "<video_url>",
-            "channel_name": "<channel_name>",
-            "duration": "<video_duration_if_available>",
-            "relevance_score": "<1-10_scale_optional>"
-        }
+            }
     ],
     "wikipedia_sources": [
         {
             "name": "<article_title>",
             "url": "<article_url>",
-            "summary": "<brief_description_if_available>"
         }
     ],
     "google_scholar_sources": [
         {
             "name": "<research_paper_title>",
-            "authors": "<author_names_comma_separated>",
             "url": "<article_url>",
-            "publication_date": "<YYYY-MM-DD_or_YYYY_format>",
-            "journal": "<journal_name_if_available>",
-            "citation_count": "<number_if_available>"
-        }
+             }
     ]
 }
 

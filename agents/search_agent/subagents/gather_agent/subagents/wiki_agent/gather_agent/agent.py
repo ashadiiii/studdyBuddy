@@ -12,12 +12,16 @@ root_agent = LlmAgent(
     instruction=WIKI_PROMPT,
     tools=[
         MCPToolset(
-            connection_params=StdioServerParameters(
-                command="wikipedia-mcp",
-                args=[]
+            connection_params=StdioConnectionParams(
+                server_params=StdioServerParameters(
+                    command="wikipedia-mcp",
+                    args=[]
                 ),
-            tool_filter=["search_wikipedia", "get_article", "get_summary", "get_related_topics"]
+                timeout=1200
             ),
+            tool_filter=["search_wikipedia", "get_article", "get_summary", "get_related_topics"]
+        )
+
         ],
     description="Search and gathers all wikipedia articles under given search topics that meet given criteria.",
     output_key="wikipedia_resources"

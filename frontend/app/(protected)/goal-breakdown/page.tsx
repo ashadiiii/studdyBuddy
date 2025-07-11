@@ -1,12 +1,20 @@
 "use client"
 
 import React, { useState } from 'react';
-import { Button } from '../../../components/ui/button';
-import { Input } from '../../../components/ui/input';
-import { Textarea } from '../../../components/ui/textarea';
-import { Card, CardContent, CardHeader, CardTitle } from '../../../components/ui/card';
-import { Badge } from '../../../components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 import { 
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from '@/components/ui/carousel';
+import { 
+  Loader2,
   Brain, 
   Target, 
   Clock, 
@@ -21,32 +29,28 @@ import {
   Video,
   ExternalLink,
   Lightbulb,
-  TrendingUp
+  TrendingUp,
+  ListOrdered
 } from 'lucide-react';
-import { cn } from '../../../lib/utils';
+import { cn } from '@/lib/utils';
+import { useAuth } from '@/hooks/useAuth';
+import { toast } from '@/hooks/use-toast';
 
 interface Subtask {
-  id: string;
   title: string;
-  description: string;
-  estimatedTime: string;
+  instructions: string;
+  estimatedTime: number;
   difficulty: 'easy' | 'medium' | 'hard';
   priority: 'low' | 'medium' | 'high';
   dueDate: string;
-  resources: Resource[];
+  exercises: string[];
   tips: string[];
 }
 
-interface Resource {
-  type: 'video' | 'article' | 'document' | 'practice';
-  title: string;
-  url: string;
-  description: string;
-}
 
 interface BreakdownResult {
-  mainGoal: string;
-  estimatedTotalTime: string;
+  subject:string;
+  estimatedTime: number;
   difficulty: string;
   subtasks: Subtask[];
   overallTips: string[];
@@ -59,132 +63,82 @@ const GoalBreakdown = () => {
   const [subject, setSubject] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
   const [breakdown, setBreakdown] = useState<BreakdownResult | null>(null);
+  const {makeAuthenticatedRequest} = useAuth()
+  const [isExporting,setIsExporting] = useState(false)
 
-  // Mock AI breakdown function (replace with actual AI service)
+  const exportTasks = async () => {
+    try{
+      setIsExporting(true)
+      console.log(JSON.stringify(breakdown))
+      await makeAuthenticatedRequest('/api/v1/goalBreakdown/export-tasks', {
+        method: 'POST',
+        body: JSON.stringify(breakdown)
+      });
+      toast({
+        title: "Success",
+        description: "Successfully exported tasks.",
+        variant: "default"
+      });
+
+    }
+    catch (error) {
+      console.error('Error exporting:', error);
+      toast({
+        title: "Error",
+        description: "Failed to export tasks. Please try again.",
+        variant: "destructive"
+      });
+    }
+    finally{
+      setIsExporting(false)
+    }
+  }
+    // Call the actual goal breakdown API
   const generateBreakdown = async () => {
+    if (!task || !subject || !deadline) {
+      toast({
+        title: "Missing Information",
+        description: "Please fill in all required fields (task, subject, and deadline).",
+        variant: "destructive"
+      });
+      return;
+    }
+
     setIsGenerating(true);
     
-    // Simulate AI processing time
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    
-    // Mock response based on the input
-    const mockBreakdown: BreakdownResult = {
-      mainGoal: task,
-      estimatedTotalTime: "12-15 hours",
-      difficulty: "Medium",
-      subtasks: [
-        {
-          id: '1',
-          title: 'Review Core Concepts',
-          description: 'Go through fundamental principles and theories covered in the course',
-          estimatedTime: '3-4 hours',
-          difficulty: 'medium',
-          priority: 'high',
-          dueDate: '2 days before exam',
-          resources: [
-            {
-              type: 'video',
-              title: 'Khan Academy - Core Concepts',
-              url: '#',
-              description: 'Comprehensive video series covering fundamental topics'
-            },
-            {
-              type: 'document',
-              title: 'Course Textbook - Chapters 1-5',
-              url: '#',
-              description: 'Official textbook with detailed explanations'
-            }
-          ],
-          tips: [
-            'Create concept maps to visualize relationships',
-            'Use active recall instead of passive reading',
-            'Take breaks every 45 minutes'
-          ]
-        },
-        {
-          id: '2',
-          title: 'Practice Problem Sets',
-          description: 'Complete practice problems and past exam questions',
-          estimatedTime: '4-5 hours',
-          difficulty: 'hard',
-          priority: 'high',
-          dueDate: '1 day before exam',
-          resources: [
-            {
-              type: 'practice',
-              title: 'Past Exam Papers (2020-2023)',
-              url: '#',
-              description: 'Collection of previous exam questions with solutions'
-            },
-            {
-              type: 'article',
-              title: 'Problem-Solving Strategies',
-              url: '#',
-              description: 'Guide to approaching complex problems systematically'
-            }
-          ],
-          tips: [
-            'Time yourself while solving problems',
-            'Review mistakes thoroughly',
-            'Focus on problem types you find challenging'
-          ]
-        },
-        {
-          id: '3',
-          title: 'Create Study Materials',
-          description: 'Make flashcards, summary notes, and formula sheets',
-          estimatedTime: '2-3 hours',
-          difficulty: 'easy',
-          priority: 'medium',
-          dueDate: '3 days before exam',
-          resources: [
-            {
-              type: 'article',
-              title: 'Effective Note-Taking Methods',
-              url: '#',
-              description: 'Techniques for creating memorable study materials'
-            }
-          ],
-          tips: [
-            'Use colors and diagrams in your notes',
-            'Keep formula sheets concise',
-            'Test yourself with flashcards regularly'
-          ]
-        },
-        {
-          id: '4',
-          title: 'Final Review & Mock Test',
-          description: 'Complete a full practice exam under timed conditions',
-          estimatedTime: '3 hours',
-          difficulty: 'medium',
-          priority: 'high',
-          dueDate: 'Day before exam',
-          resources: [
-            {
-              type: 'practice',
-              title: 'Full-Length Practice Test',
-              url: '#',
-              description: 'Complete mock exam with time constraints'
-            }
-          ],
-          tips: [
-            'Simulate actual exam conditions',
-            'Review any last-minute weak areas',
-            'Get adequate sleep before the exam'
-          ]
-        }
-      ],
-      overallTips: [
-        'Start early to avoid cramming',
-        'Use the Pomodoro Technique for focused study sessions',
-        'Form a study group for difficult concepts',
-        'Stay hydrated and maintain a healthy sleep schedule',
-        'Review material multiple times using spaced repetition'
-      ]
-    };
-    
-    setBreakdown(mockBreakdown);
-    setIsGenerating(false);
+    try {
+      // Build the Goal object for the request body
+      const goalData = {
+        subject: subject,
+        title: task,
+        deadline: deadline,
+        description: description || '',
+      };
+
+      const response = await makeAuthenticatedRequest('/api/v1/goalBreakdown/', {
+        method: 'POST',
+        body: JSON.stringify(goalData)
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to generate breakdown');
+      }
+
+      const breakdown:BreakdownResult = await response.json();
+      breakdown.subject = subject
+      // Transform the API response to match our BreakdownResult format
+      setBreakdown(breakdown);
+
+    } catch (error) {
+      console.error('Error generating breakdown:', error);
+      toast({
+        title: "Error",
+        description: "Failed to generate goal breakdown. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsGenerating(false);
+    }
   };
 
   const getDifficultyColor = (difficulty: string) => {
@@ -202,16 +156,6 @@ const GoalBreakdown = () => {
       case 'medium': return 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400';
       case 'high': return 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400';
       default: return 'bg-gray-100 text-gray-700 dark:bg-gray-900/30 dark:text-gray-400';
-    }
-  };
-
-  const getResourceIcon = (type: string) => {
-    switch (type) {
-      case 'video': return <Video size={16} />;
-      case 'article': return <FileText size={16} />;
-      case 'document': return <BookOpen size={16} />;
-      case 'practice': return <Target size={16} />;
-      default: return <Link2 size={16} />;
     }
   };
 
@@ -269,7 +213,7 @@ const GoalBreakdown = () => {
             
             <div className="space-y-2">
               <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                Additional Details
+                Additional Details (Optional)
               </label>
               <Textarea
                 placeholder="Provide any specific requirements, topics to focus on, or constraints..."
@@ -281,7 +225,7 @@ const GoalBreakdown = () => {
 
             <div className="space-y-2">
               <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                Deadline (Optional)
+                Deadline
               </label>
               <Input
                 type="date"
@@ -326,7 +270,7 @@ const GoalBreakdown = () => {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   <div className="text-center">
                     <div className="text-2xl font-bold text-purple-600 dark:text-purple-400">
-                      {breakdown.estimatedTotalTime}
+                      {breakdown.estimatedTime} hours
                     </div>
                     <div className="text-sm text-gray-600 dark:text-gray-400">Estimated Time</div>
                   </div>
@@ -354,7 +298,7 @@ const GoalBreakdown = () => {
               </h2>
               
               {breakdown.subtasks.map((subtask, index) => (
-                <Card key={subtask.id} className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-xl border border-white/20 dark:border-gray-700/20 hover:bg-white/80 dark:hover:bg-gray-800/80 transition-all duration-300">
+                <Card key={index} className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-xl border border-white/20 dark:border-gray-700/20 hover:bg-white/80 dark:hover:bg-gray-800/80 transition-all duration-300">
                   <CardContent className="p-6">
                     <div className="flex items-start gap-4">
                       <div className="flex-shrink-0 w-8 h-8 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-full flex items-center justify-center text-white font-bold">
@@ -377,14 +321,14 @@ const GoalBreakdown = () => {
                         </div>
                         
                         <p className="text-gray-600 dark:text-gray-400">
-                          {subtask.description}
+                          {subtask.instructions}
                         </p>
                         
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
                           <div className="flex items-center gap-2">
                             <Timer size={16} className="text-blue-600" />
                             <span className="text-gray-600 dark:text-gray-400">
-                              Estimated time: <strong>{subtask.estimatedTime}</strong>
+                              Estimated time: <strong>{subtask.estimatedTime} hours</strong>
                             </span>
                           </div>
                           <div className="flex items-center gap-2">
@@ -395,29 +339,33 @@ const GoalBreakdown = () => {
                           </div>
                         </div>
                         
-                        {/* Resources */}
-                        {subtask.resources.length > 0 && (
+                        {/* Instructions Carousel */}
+                        {subtask.exercises && subtask.exercises.length > 0 && (
                           <div className="space-y-2">
                             <h4 className="font-medium text-gray-800 dark:text-gray-200 flex items-center gap-2">
-                              <BookOpen size={16} />
-                              Recommended Resources
+                              <ListOrdered size={16} />
+                              Step-by-Step Instructions
                             </h4>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                              {subtask.resources.map((resource, idx) => (
-                                <div key={idx} className="flex items-center gap-2 p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors cursor-pointer">
-                                  {getResourceIcon(resource.type)}
-                                  <div className="flex-1">
-                                    <div className="font-medium text-sm text-gray-800 dark:text-gray-200">
-                                      {resource.title}
+                            <Carousel className="w-full max-w-3xl mx-auto">
+                              <CarouselContent>
+                                {subtask.exercises.map((instruction, idx) => (
+                                  <CarouselItem key={idx}>
+                                    <div className="p-4 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-lg border border-blue-200 dark:border-blue-700/50">
+                                      <div className="flex items-start gap-3">
+                                        <div className="w-6 h-6 bg-gradient-to-br from-blue-500 to-indigo-600 text-white rounded-full flex items-center justify-center font-bold text-sm flex-shrink-0">
+                                          {idx + 1}
+                                        </div>
+                                        <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
+                                          {instruction}
+                                        </p>
+                                      </div>
                                     </div>
-                                    <div className="text-xs text-gray-600 dark:text-gray-400">
-                                      {resource.description}
-                                    </div>
-                                  </div>
-                                  <ExternalLink size={14} className="text-gray-400" />
-                                </div>
-                              ))}
-                            </div>
+                                  </CarouselItem>
+                                ))}
+                              </CarouselContent>
+                              <CarouselPrevious />
+                              <CarouselNext />
+                            </Carousel>
                           </div>
                         )}
                         
@@ -476,8 +424,22 @@ const GoalBreakdown = () => {
               </Button>
               <Button 
                 className="px-6 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700"
-              >
-                Export to Tasks
+                onClick={exportTasks}>
+          
+                {isExporting? 
+                (
+                  <>
+                    <Loader2 className="animate-spin w-6 h-6 text-primary" />
+                    Exporting
+                  </>
+                ):
+                (
+                  <>
+                    Export to Tasks
+                  </>
+                )
+                }
+
               </Button>
             </div>
           </div>

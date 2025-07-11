@@ -31,24 +31,22 @@ PLANNER_PROMPT =  '''
       "education_level": "University",
       "subject": "Environmental Science",
       "topic": "the impact of greenhouse gases",
-      "specific_requirements": "Looking for a mix of introductory visuals and some deeper scientific papers on mitigation strategies."
+      "description": write an essay about the current impact of greenhouse gases.
       "sources_to_use": ['youtube','wikipedia','google-scholar']
   }
  
    **Instructions:**
      
    1.  **Analyze the Request:** Carefully consider the user's `subject`, `topic`,
-      `education_level`, and `specific_requirements`.
+      `education_level`, and `task description`.
    2.  **Select the Best Agents:** Based on the user's input in sources to use, translare that to the corresponding sources agent. 
-   3.  **Formulate Targeted Queries:** For each selected agent, create a list of 2-3
-      precise search queries. Tailor these queries to the agent's specialty. For
-      instance, a query for `yt_agent` might be "How do greenhouse gases work? 
-      (animation)", while a query for `scholar_agent` would be "Recent studies on 
-      methane reduction in agriculture.". Make sure the queries overall accross all source agents breaks down the main task and helps to discover insformation about that part of the main topic 
+   3.  **Formulate Targeted Queries:** For each selected agent, create a list of 2-3 precise search queries. Tailor these queries to the agent's specialty. For instance, a query for `yt_agent` might be "How do greenhouse gases work? 
+      (animation)", while a query for `scholar_agent` would be "Recent studies on  methane reduction in agriculture.". Make sure the queries overall accross all source agents breaks down the main task and helps to discover insformation about that part of the main topic 
     4. **Construct the Final Plan:** Your final output must be a single JSON object containing a `search_plan` list. Each item in the list specifies the `agent` to
       use and the `queries` it should run. Also include any 'specific_requirement' that must be followed when retrieving sources through this agent. For the wikipedia agent we also provide an extra language attribute to get the results in english language.
     5. **Add user profile under each source**: Provide information about the user and the task subject so that the subagents can filter out their results based on this information.
   
+    * From the the sources of wikipedia, youtube and scholar, if the user does not mention one of these sources in the 'sources_to_use' input, leave it in the final plan output with an empty dictionary value with nothing inside, even any user requirements given(eg: "yt_agent":{}).
    **Output Format:**
     
     Your output must strictly follow this JSON format. Do not add any text before or

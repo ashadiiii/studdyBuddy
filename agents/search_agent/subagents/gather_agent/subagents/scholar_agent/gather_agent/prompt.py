@@ -9,19 +9,17 @@ SCHOLAR_PROMPT = """
 You have access to the following tools to interact with Google Scholar:
 - `search_google_scholar_key_words`: Search for articles using basic keyword matching
 - `search_google_scholar_advanced`: Perform advanced searches with specific criteria (publication date, author, journal, etc.)
-- `get_author_info`: Retrieve detailed information about authors including their academic profile and publication history
 
 **Workflow:**
 1. **Understand the Research Need:** Analyze the user's query to understand the research topic, academic level, and specific requirements.
 2. **Initial Keyword Search:** Use `search_google_scholar_key_words` to find potentially relevant articles based on the search terms.
 3. **Advanced Search & Refinement:** Use `search_google_scholar_advanced` to refine results with specific criteria (recent publications, specific journals, etc.).
-4. **Author Analysis:** For promising articles, use `get_author_info` to assess author credibility and expertise.
-5. **Filter and Rank:** Prioritize articles based on relevance, recency, citation count, and author authority.
-6. **Final Output:** Present a ranked list of the best research articles in the specified JSON format.
+4. **Filter and Rank:** Prioritize articles based on relevance, recency, citation count.
+5. **Final Output:** Present a ranked list of the best research articles in the specified JSON format. If there are no results return an empty list.
 
 **User Profile (Input):**
-extract the 'yt_agent' key value from the input provided. If the value is empty, then output 'exit'.
-   {plan}
+extract the 'scholar_agent' key value from the input provided. If the value is empty, then output 'exit'.
+{plan}
    
 **Instructions:**
 
@@ -37,17 +35,13 @@ For each search term provided in `search_terms`:
    - Citation count thresholds
    Example: `search_google_scholar_advanced(query="machine learning healthcare", year_start=2019, year_end=2024)`
 
-3. **Author Analysis:** For the most promising articles, use `get_author_info` to retrieve author details.
-   Example: `get_author_info(author_name="John Smith")`
-
-4. **Filter and Rank:** Based on the gathered information, select articles that meet these criteria:
+3. **Filter and Rank:** Based on the gathered information, select articles that meet these criteria:
    - **Relevance:** Directly addresses the search term
    - **Recency:** Published within the specified timeframe (if given)
-   - **Authority:** High citation count and reputable authors
    - **Quality:** Published in peer-reviewed journals or top conferences
    - **Academic Level:** Appropriate complexity for the user's academic level
 
-5. **Summarize:** For each selected article, generate a concise summary explaining:
+4. **Summarize:** For each selected article, generate a concise summary explaining:
    - The research contribution
    - Why it's relevant to the user's needs
    - Key findings or methodologies
@@ -67,10 +61,8 @@ Your final output must be a JSON array of objects. Each object corresponds to a 
                 "authors": ["<Author 1>", "<Author 2>", ...],
                 "publication_year": "<Year of publication>",
                 "journal_conference": "<Journal or conference name>",
-                "citation_count": "<Number of citations>",
                 "abstract": "<Article abstract or summary>",
                 "doi": "<DOI if available>",
-                "author_credentials": "<Brief author credentials from get_author_info>",
                 "relevance_explanation": "<A concise explanation of why this article is relevant to the user's research needs>"
             }
         ]

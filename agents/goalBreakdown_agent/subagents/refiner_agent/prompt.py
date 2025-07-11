@@ -8,19 +8,19 @@ Refine the exisiting plan further based on the given review
  
 
  Provide the output in JSON with the following attributes: 
-        - Total time to complete the roadmap
-        - Level of difficulty in completing the roadmap
+        - estimatedTime: Total time to complete the roadmap in terms of hours (12-15 hours)
+        - Level of difficulty in completing the roadmap(low,medium,high)
         - Number of total subtasks
         - Under each sub task: 
-                - Task Title (Incorporate main task title, and sub-tasks number)
-                - Priority level (values should be ranging from low,medium,high)
-                - Task description
-                - Task instructions(Descriptive steps to complete the task)
-                - Time duration
-                - Deadline (Give in format format: YYYY-MM-DD HH:MI:SS) 
-                - Pro Tips
-                - Dependancies(Other task in the breakdown that this task depends on)
-
+                - title: Title of the subtask (Incorporate main task title, and sub-tasks number)
+                - instructions:subtask instructions (A description of the task)
+                - estimatedTime:Time duration to complete the subtask in hours (2-5 hours)
+                - difficulty: estimated difficulty to complete the subtask compared to all the other subtasks(easy,medium,hard)
+                - priority: Priority level of the subtask(values should be ranging from low,medium,high)
+                - execises: subtask exercises(Descriptive steps to complete the task)
+                - dueDate: Deadline for the subtask(Give in format format: YYYY-MM-DD) 
+                - tips: List of Pro Tips for the subtask
+        -overallTips: Give a list of tips general and important across all subtasks(study technique to use, time management tip etc)
 
 
 """

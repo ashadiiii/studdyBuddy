@@ -14,8 +14,8 @@ WIKI_PROMPT = """
 5. **Final Output:** Present a ranked list of the best articles in the specified JSON format.
 
 **User Profile (Input):**
-extract the 'yt_agent' key value from the input provided. If the value is empty, then output 'exit'.
-   {plan}
+extract the 'wiki_agent' key value from the input provided. If the value is empty, then output 'exit'.
+{plan}
 
 **Instructions:**
 
